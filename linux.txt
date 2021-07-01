@@ -1,0 +1,30 @@
+1.找出当前目录下一小时内新增的文件
+   find -mmin -60
+2.把某个目录下的所有文件，目录添加其他用户可执行，同一组内用户不可写权限
+   chmod -R g-w,o+x ./user/
+3.检测当前机器下80，443端口是否被占用，使用至少三个方法 
+   netstat -anp | grep 443	
+   netstat -anp | grep 8080
+   	lsof  -i:8080
+	lsof  -i:443
+		netstat   -nultp
+4.找出当前机器下所有处于listen状态的TCP端口
+   netstat -lt
+5.找出某个进程的启动路径，例如sshd
+   ps -ef | grep sshd 得到 PID
+   ls -l  /proc/PID/exe
+6. 创建一个10000行的文件，文件内有三列，以制表符分割。第一列为数字，第二列为字符串，第三列为数字。以第二列为标准按照字母排序对三个文件
+排序，重复的只保留一个，然后对第一列的数字求和。
+#! /bin/bash
+touch dyf.txt
+for i in $(seq 1 10000)
+do
+	x=$(( ( RANDOM % 10 ） +1 ))
+	j=$(tr -dc "a-z" < /dev/urandom | head -c 2)
+	echo -e "$x\t$j\t$RANDOM" >> dyf.txt
+done
+
+sort -k 2 -t $'\t' dyf.txt >> dyf2.txt
+awk '!arr[$2]++' dyf2.txt >> dyf3.txt
+sum = $(awk '{sum+=$1};END{print sum}' dyf3.txt)
+echo "$sum"
